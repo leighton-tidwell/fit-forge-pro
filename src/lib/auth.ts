@@ -18,13 +18,10 @@ export const authOptions = {
   ],
   pages: {
     signIn: "/login",
-    signOut: "/logout",
-    error: "/login",
   },
   callbacks: {
     async session({ token, session }) {
-      if (token) {
-        session.user.id = token.id;
+      if (token && session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
