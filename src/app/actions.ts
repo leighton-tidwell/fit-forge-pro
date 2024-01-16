@@ -226,3 +226,63 @@ export async function deleteWorkout(id: string) {
     console.log(error);
   }
 }
+
+export async function createWorkoutSession(workoutId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return null;
+    }
+
+    const user = await db.user.findUnique({
+      where: { email: session.user.email ?? undefined },
+    });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const workoutSession = await db.workoutSession.create({
+      data: {
+        workoutId,
+        userId: user.id,
+        status: "IN_PROGRESS",
+        startedAt: new Date(),
+      },
+      include: {
+        workout: true,
+        user: true,
+      },
+    });
+
+    return workoutSession;
+  } catch (error) {
+    console.log("Error creating workout session");
+    console.log(error);
+  }
+}
+
+export async function getWorkoutSession(workoutSessionId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return null;
+    }
+
+    const workoutSession = await db.workoutSession.findUnique({
+      where: { id: workoutSessionId, userId: session.user.id },
+      include: {
+        workout: true,
+        user: true,
+      },
+    });
+
+    return workoutSession ?? null;
+  } catch (error) {
+    console.log("Error getting workout session");
+    console.log(error);
+  }
+}

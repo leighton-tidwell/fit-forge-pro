@@ -57,18 +57,19 @@ model VerificationToken {
 }
 
 model Exercise {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  videoUrl    String?
-  sets        Int?
-  reps        Int?
-  weight      Int?
-  duration    Int? // in seconds
-  cooldown    Int? // in seconds
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workouts    Workout[] @relation("WorkoutToExercise")
+  id                     String                   @id @default(cuid())
+  name                   String
+  description            String?
+  videoUrl               String?
+  sets                   Int?
+  reps                   Int?
+  weight                 Int?
+  duration               Int? // in seconds
+  cooldown               Int? // in seconds
+  userId                 String
+  user                   User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workouts               Workout[]                @relation("WorkoutToExercise")
+  ExerciseWorkoutSession ExerciseWorkoutSession[]
 
   @@unique([userId, id])
 }
@@ -80,17 +81,34 @@ model Workout {
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   exerciseIds    String[]
   exercises      Exercise[]       @relation("WorkoutToExercise")
-  WorkoutSession WorkoutSession[] 
+  WorkoutSession WorkoutSession[]
 
   @@unique([userId, id])
 }
 
 model WorkoutSession {
-  id        String  @id @default(cuid())
-  workoutId String
-  workout   Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                     String                   @id @default(cuid())
+  workoutId              String
+  workout                Workout                  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  userId                 String
+  user                   User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                 String                   @default("IN_PROGRESS")
+  startedAt              DateTime?                @default(now())
+  endedAt                DateTime?
+  ExerciseWorkoutSession ExerciseWorkoutSession[]
 
   @@unique([userId, id])
+}
+
+model ExerciseWorkoutSession {
+  id               String         @id @default(cuid())
+  workoutSessionId String
+  workoutSession   WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  exerciseId       String
+  exercise         Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  status           String         @default("IN_PROGRESS")
+  startedAt        DateTime?      @default(now())
+  endedAt          DateTime?
+
+  @@unique([workoutSessionId, exerciseId])
 }

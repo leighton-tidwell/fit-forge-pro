@@ -3,5 +3,5 @@ export default async function WorkoutsLayout({
 }: {
   children?: React.ReactNode;
 }) {
-  return <main className="flex px-5 w-full">{children}</main>;
+  return <main className="flex flex-col px-5 w-full gap-4">{children}</main>;
 }
