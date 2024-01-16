@@ -1,4 +1,5 @@
 import {
+  PlusCircle,
   AlertTriangle,
   ArrowRight,
   Check,
@@ -14,6 +15,7 @@ import {
   Loader2,
   LucideIcon,
   LucideProps,
+  Menu,
   Moon,
   MoreVertical,
   Pizza,
@@ -23,6 +25,7 @@ import {
   Trash,
   User,
   X,
+  ArrowLeft,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -67,4 +70,7 @@ export const Icons = {
     </svg>
   ),
   check: Check,
+  menu: Menu,
+  plusCircle: PlusCircle,
+  arrowLeft: ArrowLeft,
 };

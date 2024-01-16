@@ -1,8 +1,12 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { Button } from "./ui/button";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
+import { Icons } from "./icons";
 
 export const SignOutButton = () => (
-  <Button onClick={() => signOut()}>Sign out</Button>
+  <DropdownMenuItem onClick={() => signOut()}>
+    <Icons.close />
+    Sign out
+  </DropdownMenuItem>
 );
