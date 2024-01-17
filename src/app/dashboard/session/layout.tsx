@@ -1,4 +1,4 @@
-export default async function WorkoutsLayout({
+export default async function SessionLayout({
   children,
 }: {
   children?: React.ReactNode;

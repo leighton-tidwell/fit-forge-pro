@@ -92,8 +92,8 @@ model WorkoutSession {
   workout                Workout                  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   userId                 String
   user                   User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status                 String                   @default("IN_PROGRESS")
-  startedAt              DateTime?                @default(now())
+  status                 String                   @default("IDLE") // IDLE, STARTED, COMPLETED
+  startedAt              DateTime?                
   endedAt                DateTime?
   ExerciseWorkoutSession ExerciseWorkoutSession[]
 
@@ -106,7 +106,7 @@ model ExerciseWorkoutSession {
   workoutSession   WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
   exerciseId       String
   exercise         Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  status           String         @default("IN_PROGRESS")
+  status           String         @default("STARTED") // STARTED, COMPLETED
   startedAt        DateTime?      @default(now())
   endedAt          DateTime?
 

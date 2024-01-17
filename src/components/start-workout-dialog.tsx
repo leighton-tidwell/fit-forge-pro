@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { getWorkoutsForCurrentUser } from "@/app/actions";
+import { createWorkoutSession, getWorkoutsForCurrentUser } from "@/app/actions";
 import { Workout } from "@prisma/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
@@ -48,9 +48,21 @@ export const StartWorkoutDialog = () => {
     fetchWorkouts();
   }, []);
 
-  const handleStartWorkout = () => {
+  const handleStartWorkout = async () => {
     setIsRouteLoading(true);
-    router.push(`/dashboard/workout/${selectedWorkout?.id}`);
+    try {
+      if (selectedWorkout) {
+        const workoutSession = await createWorkoutSession(selectedWorkout?.id);
+
+        if (workoutSession) {
+          router.push(`/dashboard/session/${workoutSession.id}/`);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsRouteLoading(false);
+    }
   };
 
   return (
@@ -73,6 +85,7 @@ export const StartWorkoutDialog = () => {
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <Select
+            disabled={isLoading}
             defaultValue={selectedWorkout?.name}
             onValueChange={(value) => {
               const workout = workouts.find((workout) => workout.id === value);

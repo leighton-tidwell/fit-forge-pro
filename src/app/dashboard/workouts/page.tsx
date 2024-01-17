@@ -7,7 +7,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { WorkoutsTable } from "@/components/tables/workouts-table/data-table";
-import { columns } from "@/components/tables/workouts-table/columns";
+import { columns as workoutColumns } from "@/components/tables/workouts-table/columns";
+import { columns as workoutSessionColumns } from "@/components/tables/workout-session-table/columns";
+import {
+  getWorkoutSessionsForCurrentUser,
+  getWorkoutsForCurrentUser,
+} from "@/app/actions";
+import { WorkoutSessionsTable } from "@/components/tables/workout-session-table/data-table";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
@@ -16,14 +22,12 @@ export default async function WorkoutsPage() {
     redirect(authOptions?.pages?.signIn || "/auth/login");
   }
 
-  const userWorkouts = await db.workout.findMany({
-    where: {
-      userId: user.id,
-    },
-  });
+  const userWorkouts = await getWorkoutsForCurrentUser();
+
+  const userWorkoutSessions = await getWorkoutSessionsForCurrentUser();
 
   return (
-    <div className="grid w-full gap-1">
+    <div className="grid w-full gap-2">
       <Link
         href="/dashboard"
         className={cn(buttonVariants({ variant: "ghost" }), "w-[fit-content]")}
@@ -31,8 +35,14 @@ export default async function WorkoutsPage() {
         <Icons.chevronLeft className="w-4" />
         Back
       </Link>
-      My Workouts
-      <WorkoutsTable columns={columns} data={userWorkouts} />
+      <h1 className="text-4xl font-bold tracking-tight">Workouts</h1>
+      <WorkoutsTable columns={workoutColumns} data={userWorkouts.data ?? []} />
+
+      <h1 className="text-4xl font-bold tracking-tight">Workout Sessions</h1>
+      <WorkoutSessionsTable
+        columns={workoutSessionColumns}
+        data={userWorkoutSessions ?? []}
+      />
     </div>
   );
 }

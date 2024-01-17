@@ -4,31 +4,32 @@ import { useState } from "react";
 import { Workout, WorkoutSession } from "@prisma/client";
 import { Icons } from "./icons";
 import { Button } from "./ui/button";
-import { createWorkoutSession } from "@/app/actions";
+import { createWorkoutSession, startWorkoutSession } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
 type WorkoutActionButtonProps = {
-  workout: Workout | null | undefined;
   workoutSession: WorkoutSession | null | undefined;
 };
 
 export const WorkoutActionButton = ({
-  workout,
   workoutSession,
 }: WorkoutActionButtonProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRouteLoading, setIsRouteLoading] = useState(false);
 
   const handleStartWorkout = async () => {
     setIsLoading(true);
     try {
-      if (workout) {
-        const workoutSession = await createWorkoutSession(workout?.id);
-
-        if (workoutSession) {
+      if (workoutSession) {
+        const updatedWorkoutSession = await startWorkoutSession(
+          workoutSession?.id
+        );
+        if (updatedWorkoutSession) {
           router.push(
-            `/dashboard/session/${workoutSession.id}/exercise/${workout.exerciseIds[0]}`
+            `/dashboard/session/${updatedWorkoutSession.id}/exercise/${updatedWorkoutSession.workout.exerciseIds[0]}`
           );
+          setIsRouteLoading(true);
         }
       }
     } catch (error) {
@@ -38,11 +39,21 @@ export const WorkoutActionButton = ({
     }
   };
 
-  if (workoutSession) {
+  const handleResumeWorkout = async () => {
+    console.log("TBD");
+  };
+
+  if (workoutSession?.startedAt && !workoutSession?.endedAt) {
     return (
-      <Button className={"w-[fit-content] mt-4"}>
-        Resume Workout <Icons.chevronRight className="w-4" />
-      </Button>
+      <>
+        <Button className={"w-[fit-content] mt-4"}>
+          Resume Workout <Icons.chevronRight className="w-4" />
+        </Button>
+        <span className="text-sm text-gray-500">
+          You started this workout on{" "}
+          {new Date(workoutSession?.startedAt).toLocaleString()}
+        </span>
+      </>
     );
   }
 
@@ -52,7 +63,7 @@ export const WorkoutActionButton = ({
       className={"w-[fit-content] mt-4"}
       onClick={handleStartWorkout}
     >
-      {isLoading ? (
+      {isLoading || isRouteLoading ? (
         <Icons.spinner className="animate-spin" />
       ) : (
         <>
