@@ -248,8 +248,6 @@ export async function createWorkoutSession(workoutId: string) {
       data: {
         workoutId,
         userId: user.id,
-        status: "IN_PROGRESS",
-        startedAt: new Date(),
       },
       include: {
         workout: true,
@@ -264,7 +262,68 @@ export async function createWorkoutSession(workoutId: string) {
   }
 }
 
-export async function getWorkoutSession(workoutSessionId: string) {
+export async function startWorkoutSession(workoutSessionId: string) {
+  try {
+    // check that the workout session belongs to the current user
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return null;
+    }
+
+    const user = await db.user.findUnique({
+      where: { email: session.user.email ?? undefined },
+    });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const workoutSession = await db.workoutSession.findUnique({
+      where: { id: workoutSessionId, userId: user.id },
+      include: {
+        workout: true,
+        user: true,
+      },
+    });
+
+    if (!workoutSession) {
+      console.log("Workout session not found");
+      return null;
+    }
+
+    const updatedWorkoutSession = await db.workoutSession.update({
+      where: { id: workoutSessionId },
+      data: {
+        startedAt: new Date(),
+      },
+      include: {
+        workout: true,
+      },
+    });
+
+    return updatedWorkoutSession;
+  } catch (error) {
+    console.log("Error starting workout session");
+    console.log(error);
+  }
+}
+
+export async function getWorkoutSessionById(id: string) {
+  try {
+    const workoutSession = await db.workoutSession.findUnique({
+      where: { id },
+    });
+
+    return workoutSession;
+  } catch (error) {
+    console.log("Error getting workout session");
+    console.log(error);
+  }
+}
+
+export async function getWorkoutSessionsForCurrentUser() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -272,17 +331,78 @@ export async function getWorkoutSession(workoutSessionId: string) {
       return null;
     }
 
-    const workoutSession = await db.workoutSession.findUnique({
-      where: { id: workoutSessionId, userId: session.user.id },
+    const user = await db.user.findUnique({
+      where: { email: session.user.email ?? undefined },
+    });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const workoutSessions = await db.workoutSession.findMany({
+      where: { userId: user.id },
       include: {
         workout: true,
-        user: true,
       },
     });
 
-    return workoutSession ?? null;
+    return workoutSessions;
   } catch (error) {
-    console.log("Error getting workout session");
+    console.log("Error getting workout sessions");
+    console.log(error);
+  }
+}
+
+export async function getExerciseWorkoutSessionByExerciseIdAndWorkoutSessionId(
+  exerciseId: string,
+  workoutSessionId: string
+) {
+  try {
+    const exerciseWorkoutSession = await db.exerciseWorkoutSession.findUnique({
+      where: { workoutSessionId_exerciseId: { exerciseId, workoutSessionId } },
+    });
+
+    return exerciseWorkoutSession;
+  } catch (error) {
+    console.log("Error getting exercise workout session");
+    console.log(error);
+  }
+}
+
+export async function createExerciseWorkoutSession(
+  exerciseId: string,
+  workoutSessionId: string
+) {
+  try {
+    const exerciseWorkoutSession = await db.exerciseWorkoutSession.create({
+      data: {
+        exerciseId,
+        workoutSessionId,
+      },
+    });
+
+    return exerciseWorkoutSession;
+  } catch (error) {
+    console.log("Error creating exercise workout session");
+    console.log(error);
+  }
+}
+
+export async function endExerciseWorkoutSession(
+  exerciseWorkoutSessionId: string
+) {
+  try {
+    const exerciseWorkoutSession = await db.exerciseWorkoutSession.update({
+      where: { id: exerciseWorkoutSessionId },
+      data: {
+        endedAt: new Date(),
+      },
+    });
+
+    return exerciseWorkoutSession;
+  } catch (error) {
+    console.log("Error completing exercise workout session");
     console.log(error);
   }
 }
