@@ -297,6 +297,7 @@ export async function startWorkoutSession(workoutSessionId: string) {
       where: { id: workoutSessionId },
       data: {
         startedAt: new Date(),
+        status: "STARTED",
       },
       include: {
         workout: true,
