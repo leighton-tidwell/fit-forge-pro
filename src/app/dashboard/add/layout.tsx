@@ -1,3 +1,4 @@
+import { BackButton } from "@/components/back-button";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,16 +12,7 @@ export default async function AddLayout({
   return (
     <main className="flex px-5 w-full">
       <div className="grid w-full gap-1">
-        <Link
-          href="/dashboard"
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "w-[fit-content]"
-          )}
-        >
-          <Icons.chevronLeft className="w-4" />
-          Back
-        </Link>
+        <BackButton />
         {children}
       </div>
     </main>

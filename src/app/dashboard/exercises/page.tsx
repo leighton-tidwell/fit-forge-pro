@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { authOptions } from "@/lib/auth";
 import { getCurrentUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { ExercisesTable } from "@/components/tables/exercises-table/data-table";
 import { columns } from "@/components/tables/exercises-table/columns";
+import { BackButton } from "@/components/back-button";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
@@ -23,15 +24,19 @@ export default async function WorkoutsPage() {
   });
 
   return (
-    <div className="grid w-full gap-1">
-      <Link
-        href="/dashboard"
-        className={cn(buttonVariants({ variant: "ghost" }), "w-[fit-content]")}
-      >
-        <Icons.chevronLeft className="w-4" />
-        Back
-      </Link>
-      My Exercises
+    <div className="grid w-full gap-4">
+      <BackButton />
+      <div className="flex items-center">
+        <h1 className="font-extrabold tracking-tighter text-4xl flex-1">
+          My Exercises
+        </h1>
+        <Link
+          className={cn(buttonVariants(), "ml-4")}
+          href={"/dashboard/add/exercise"}
+        >
+          Add Exercise
+        </Link>
+      </div>
       <ExercisesTable columns={columns} data={userExercises} />
     </div>
   );
