@@ -53,9 +53,35 @@ export const CreateWorkoutForm = ({
     }
   };
 
+  // TODO: This is a bit complex, we should refactor this to be more readable
   const handleRowSelectionChange = useCallback(
     (selectedExerciseIds: string[]) => {
-      form.setValue("selectedExerciseIds", selectedExerciseIds);
+      // Lets do a comparison of the previous selected exercises and the new selected exercises
+      // That way we are able to retain the order of the items to what the user selected
+
+      const previousSelectedExerciseIds = form.getValues("selectedExerciseIds");
+      const newSelectedExerciseIds = selectedExerciseIds.filter(
+        (id) => !previousSelectedExerciseIds.includes(id)
+      );
+
+      // first lets check if its less than the previous selected exercises
+      if (selectedExerciseIds.length < previousSelectedExerciseIds.length) {
+        // lets find the ID that was removed, and remove it from the previousSelectedExerciseIds
+        const removedExerciseId = previousSelectedExerciseIds.find(
+          (id) => !selectedExerciseIds.includes(id)
+        );
+        const orderedNewSelectedExerciseIds =
+          previousSelectedExerciseIds.filter((id) => id !== removedExerciseId);
+
+        form.setValue("selectedExerciseIds", orderedNewSelectedExerciseIds);
+        form.clearErrors("selectedExerciseIds");
+        return;
+      }
+
+      const orderedNewSelectedExerciseIds = previousSelectedExerciseIds.concat(
+        newSelectedExerciseIds
+      );
+      form.setValue("selectedExerciseIds", orderedNewSelectedExerciseIds);
       form.clearErrors("selectedExerciseIds");
     },
     [form]
