@@ -28,12 +28,7 @@ export const NavBar = () => {
           <NavigationMenuContent>
             <ul className="p-2">
               <NavigationMenuItem className="w-full">
-                <Link
-                  href="/dashboard"
-                  legacyBehavior
-                  passHref
-                  className="w-full"
-                >
+                <Link href="/dashboard" passHref className="w-full">
                   <NavigationMenuLink
                     active={pathname === "/dashboard"}
                     className={navigationMenuTriggerStyle()}
@@ -43,7 +38,7 @@ export const NavBar = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/dashboard/exercises" legacyBehavior passHref>
+                <Link href="/dashboard/exercises" passHref>
                   <NavigationMenuLink
                     active={pathname === "/dashboard/exercises"}
                     className={navigationMenuTriggerStyle()}
@@ -53,7 +48,7 @@ export const NavBar = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/dashboard/workouts" legacyBehavior passHref>
+                <Link href="/dashboard/workouts" passHref>
                   <NavigationMenuLink
                     active={pathname === "/dashboard/workouts"}
                     className={navigationMenuTriggerStyle()}

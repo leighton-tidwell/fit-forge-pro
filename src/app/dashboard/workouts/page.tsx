@@ -11,9 +11,10 @@ import { columns as workoutColumns } from "@/components/tables/workouts-table/co
 import { columns as workoutSessionColumns } from "@/components/tables/workout-session-table/columns";
 import {
   getWorkoutSessionsForCurrentUser,
-  getWorkoutsForCurrentUser,
+  getWorkoutsForUser,
 } from "@/app/actions";
 import { WorkoutSessionsTable } from "@/components/tables/workout-session-table/data-table";
+import { BackButton } from "@/components/back-button";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
@@ -22,20 +23,24 @@ export default async function WorkoutsPage() {
     redirect(authOptions?.pages?.signIn || "/auth/login");
   }
 
-  const userWorkouts = await getWorkoutsForCurrentUser();
+  const userWorkouts = await getWorkoutsForUser();
 
   const userWorkoutSessions = await getWorkoutSessionsForCurrentUser();
 
   return (
-    <div className="grid w-full gap-2">
-      <Link
-        href="/dashboard"
-        className={cn(buttonVariants({ variant: "ghost" }), "w-[fit-content]")}
-      >
-        <Icons.chevronLeft className="w-4" />
-        Back
-      </Link>
-      <h1 className="text-4xl font-bold tracking-tight">Workouts</h1>
+    <div className="grid w-full gap-4">
+      <BackButton />
+      <div className="flex items-center">
+        <h1 className="font-extrabold tracking-tighter text-4xl flex-1">
+          My Workouts
+        </h1>
+        <Link
+          className={cn(buttonVariants(), "ml-4")}
+          href={"/dashboard/add/workout"}
+        >
+          Add Workout
+        </Link>
+      </div>
       <WorkoutsTable columns={workoutColumns} data={userWorkouts.data ?? []} />
 
       <h1 className="text-4xl font-bold tracking-tight">Workout Sessions</h1>

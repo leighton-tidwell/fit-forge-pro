@@ -10,5 +10,12 @@ export default async function AddExercisePage() {
     redirect(authOptions?.pages?.signIn || "/auth/login");
   }
 
-  return <AddExerciseForm />;
+  return (
+    <div className="flex flex-col gap-2">
+      <h1 className="font-extrabold tracking-tighter text-4xl flex-1">
+        Create Exercise
+      </h1>
+      <AddExerciseForm />
+    </div>
+  );
 }

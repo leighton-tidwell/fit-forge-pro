@@ -29,7 +29,9 @@ export default async function AddWorkoutPage() {
 
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-bold">Create Workout</h1>
+      <h1 className="font-extrabold tracking-tighter text-4xl flex-1">
+        Create Workout
+      </h1>
       <CreateWorkoutForm userExercises={userExercises} />
     </div>
   );

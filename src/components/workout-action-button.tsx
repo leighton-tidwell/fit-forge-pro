@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Workout, WorkoutSession } from "@prisma/client";
 import { Icons } from "./icons";
 import { Button } from "./ui/button";
-import { createWorkoutSession, startWorkoutSession } from "@/app/actions";
+import { startWorkoutSession } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
 type WorkoutActionButtonProps = {
@@ -39,9 +39,7 @@ export const WorkoutActionButton = ({
     }
   };
 
-  const handleResumeWorkout = async () => {
-    console.log("TBD");
-  };
+  const handleResumeWorkout = async () => {};
 
   if (workoutSession?.startedAt && !workoutSession?.endedAt) {
     return (

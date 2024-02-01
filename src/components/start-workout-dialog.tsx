@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { createWorkoutSession, getWorkoutsForCurrentUser } from "@/app/actions";
+import { createWorkoutSession, getWorkoutsForUser } from "@/app/actions";
 import { Workout } from "@prisma/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
@@ -32,7 +32,7 @@ export const StartWorkoutDialog = () => {
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
-      const { data, errors } = await getWorkoutsForCurrentUser();
+      const { data, errors } = await getWorkoutsForUser();
 
       if (data?.length) {
         setWorkouts(data);

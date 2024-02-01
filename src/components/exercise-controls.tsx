@@ -2,7 +2,7 @@
 import { Exercise, ExerciseWorkoutSession } from "@prisma/client";
 import { Button } from "./ui/button";
 import { Icons } from "./icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { endExerciseWorkoutSession } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
