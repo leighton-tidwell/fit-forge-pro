@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { exerciseSchema } from "@/lib/form-validations/exercise";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,7 @@ export type AddExerciseFormFields = z.infer<typeof exerciseSchema> &
   [key: string, value: any];
 
 export const AddExerciseForm = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const form = useForm<AddExerciseFormFields>({
     resolver: zodResolver(exerciseSchema),
     defaultValues: {
@@ -34,6 +35,7 @@ export const AddExerciseForm = () => {
       weight: 0,
       duration: 0,
       cooldown: 0,
+      video: "",
     },
   });
 
@@ -48,6 +50,9 @@ export const AddExerciseForm = () => {
       }
       await createExercise(formData);
       form.reset();
+
+      // Reset video input
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error(error);
     } finally {
@@ -193,12 +198,16 @@ export const AddExerciseForm = () => {
           <FormField
             control={form.control}
             name="video"
-            render={({ field }) => (
+            render={({ field: { ref, ...field } }) => (
               <FormItem>
                 <FormLabel>Video</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
+                    ref={(e) => {
+                      ref(e);
+                      fileInputRef.current = e;
+                    }}
                     accept="video/*"
                     value={field.value?.fileName}
                     onChange={(event) => {
