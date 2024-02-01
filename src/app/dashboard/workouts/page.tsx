@@ -11,7 +11,7 @@ import { columns as workoutColumns } from "@/components/tables/workouts-table/co
 import { columns as workoutSessionColumns } from "@/components/tables/workout-session-table/columns";
 import {
   getWorkoutSessionsForCurrentUser,
-  getWorkoutsForCurrentUser,
+  getWorkoutsForUser,
 } from "@/app/actions";
 import { WorkoutSessionsTable } from "@/components/tables/workout-session-table/data-table";
 import { BackButton } from "@/components/back-button";
@@ -23,7 +23,7 @@ export default async function WorkoutsPage() {
     redirect(authOptions?.pages?.signIn || "/auth/login");
   }
 
-  const userWorkouts = await getWorkoutsForCurrentUser();
+  const userWorkouts = await getWorkoutsForUser();
 
   const userWorkoutSessions = await getWorkoutSessionsForCurrentUser();
 
