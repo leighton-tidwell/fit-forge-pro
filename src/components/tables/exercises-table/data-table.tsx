@@ -64,9 +64,7 @@ export function ExercisesTable({
   useEffect(() => {
     if (onRowSelectionChange === undefined) return;
 
-    const selectedRows = Object.keys(rowSelection).map(
-      (index) => table.getRowModel().rows[Number(index)]
-    );
+    const selectedRows = table.getSelectedRowModel().rows;
     const selectedExerciseIds = selectedRows.map((row) => row.original.id);
     onRowSelectionChange(selectedExerciseIds);
   }, [rowSelection, onRowSelectionChange, table]);
