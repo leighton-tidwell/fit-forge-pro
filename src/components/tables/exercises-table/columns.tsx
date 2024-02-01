@@ -4,10 +4,22 @@ import { ColumnDef } from "@tanstack/react-table";
 import { deleteExercise } from "@/app/actions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableActions } from "@/components/table-actions";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<Exercise>[] = [
   {
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     accessorKey: "name",
   },
   {
